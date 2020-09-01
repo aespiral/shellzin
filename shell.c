@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #define MAIOR_DIGITACAO 256 // Tamanho máximo da string de comando, em caracteres
 #define MAIOR_COMANDO 32 // Tamanho máximo de parâmetros, opções, chaves, controles, etc. por comando
@@ -67,6 +68,8 @@ main() {
     char entrada[MAIOR_DIGITACAO];
     int recebe_status;
     int i, j;
+    int pid;
+    int status;
 
     for (i=0; i < MAIOR_PIPELINE; i++)
         for (j=0; j < MAIOR_COMANDO; j++)
@@ -81,6 +84,11 @@ main() {
 
         analise(entrada);
 
-        execvp(comando[0][0],comando[0]);
+        pid = fork();
+        if (pid == 0) {
+            execvp(comando[0][0], comando[0]);
+        } else {
+            wait(&status);
+        }
     }
 }
