@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define MAIOR_DIGITACAO 256 // Tamanho máximo da string de comando, em caracteres
 #define MAIOR_COMANDO 32 // Tamanho máximo de parâmetros, opções, chaves, controles, etc. por comando
@@ -77,12 +78,9 @@ main() {
         if (recebe_status == FALHA){
             exit(FALHA);
         }
+
         analise(entrada);
-        for (i = 0; i < quantos_comandos; i++) {
-            printf("Comando %s  Parâmetros: ", comando[i][0]);
-            for (j = 1; comando[i][j] != NULL; j++)
-                 printf("%s ", comando[i][j]);
-            putchar('\n');
-        }
+
+        execvp(comando[0][0],comando[0]);
     }
 }
