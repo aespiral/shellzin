@@ -108,7 +108,7 @@ main() {
                 close(fd[0]);
                 close(fd[1]);
                 waitpid(-1, &status, 0);
-                gilwaitpid(-1, &status, 0);
+                waitpid(-1, &status, 0);
             }
         }
     }
