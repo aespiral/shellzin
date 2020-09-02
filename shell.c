@@ -70,6 +70,7 @@ main() {
     int i, j;
     int pid;
     int status;
+    int fd[2];
 
     for (i=0; i < MAIOR_PIPELINE; i++)
         for (j=0; j < MAIOR_COMANDO; j++)
@@ -84,11 +85,31 @@ main() {
 
         analise(entrada);
 
+        if (quantos_comandos != 2) {
+            puts("Esta versão só funciona com 1 pipe, nem mais, nem menos.");
+            continue;
+        }
+
+        pipe(fd);
         pid = fork();
         if (pid == 0) {
+            dup2(fd[1],1);
+            close(fd[0]);
+            close(fd[1]);
             execvp(comando[0][0], comando[0]);
         } else {
-            wait(&status);
+            pid = fork();
+            if (pid == 0) {
+                dup2(fd[0], 0);
+                close(fd[0]);
+                close(fd[1]);
+                execvp(comando[1][0], comando[1]);
+            } else {
+                close(fd[0]);
+                close(fd[1]);
+                waitpid(-1, &status, 0);
+                gilwaitpid(-1, &status, 0);
+            }
         }
     }
 }
